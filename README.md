@@ -8,7 +8,7 @@ Casual quiz about life in Israel during tough times. You pick where you're at on
 
 ```
 war_trivia/
-├── README.md          ← you are here
+├── README.md
 ├── backend/           ← Python: logic, CLI, API
 │   ├── war_trivia/    ← game package
 │   │   ├── logic.py   ← TriviaGame, TriviaQuestion, summary_message
@@ -17,60 +17,75 @@ war_trivia/
 │   │   └── __init__.py
 │   ├── api.py         ← FastAPI app
 │   └── requirements.txt
-└── frontend/          ← empty; add React (or other) UI when ready
-    └── README.md
+└── frontend/          ← React (Vite) UI
+    └── src/
+        ├── App.jsx    ← quiz flow + skip logic
+        └── index.css
 ```
 
 ---
 
-## Run the backend
-
-From this repo (e.g. `development/` or wherever `war_trivia` lives):
+## Option A — CLI (no frontend needed)
 
 ```bash
-cd war_trivia/backend
+cd backend
 pip install -r requirements.txt
-```
-
-**CLI (interactive in terminal):**
-```bash
 python3 -m war_trivia.cli
 ```
 
-**API server (for a future frontend):**
-```bash
-uvicorn api:app --reload
-```
-Runs at http://localhost:8000. Docs: http://localhost:8000/docs.
+Runs interactively in your terminal.
 
 ---
 
-## API (for when you build the frontend)
+## Option B — API + UI
 
-- **GET `/api/questions`**  
-  Returns a list of questions. Each has: `index`, `text`, `options`, and optionally `show_only_if_previous_choice_was_not` (skip this question if the *previous* answer was that option index).
+### 1. Start the backend
 
-- **POST `/api/result`**  
-  Body: `{"answers": [0, 1, -1, 2, ...]}` — one value per question, in order. Use `-1` for skipped questions (e.g. “Where are you staying?” when they said “Yes” to “Do you live at home?”, or childcare when they have zero kids).  
-  Response: `answered_count`, `average_level`, `message` (the summary line).
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn api:app --reload
+```
 
-Skip logic is the same as the CLI: frontend should hide “Where are you staying?” when “Do you live at home?” = Yes, and hide “Childcare setup?” when “How many kids?” = Zero. Send `-1` for those so the backend has a full-length `answers` array.
+Runs at http://localhost:8000. Docs: http://localhost:8000/docs.
+
+### 2. Start the frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Runs at http://localhost:5173. Open that in your browser.
+
+---
+
+## API reference
+
+- **GET `/api/questions`**
+  Returns all questions: `index`, `text`, `options`, and optionally `show_only_if_previous_choice_was_not` (skip this question if the previous answer was that option index).
+
+- **POST `/api/result`**
+  Body: `{"answers": [0, 1, -1, 2, ...]}` — one value per question, in order. Use `-1` for skipped questions.
+  Response: `answered_count`, `average_level`, `message` (summary line).
 
 ---
 
 ## Where to edit
 
 - **Questions and options:** `backend/war_trivia/questions.py`
-- **Summary messages (the “where you’re at” line):** `backend/war_trivia/logic.py` → `summary_message()`
+- **Summary messages:** `backend/war_trivia/logic.py` → `summary_message()`
 - **CLI copy:** `backend/war_trivia/cli.py`
 - **API routes / CORS:** `backend/api.py`
+- **UI:** `frontend/src/App.jsx`
 
 ---
 
-## Continue later
+## Contributing
 
-- **Frontend:** Put a React (or other) app in `frontend/`. Call `GET /api/questions`, run through the quiz (apply skip logic), then `POST /api/result` with the `answers` array and show `message`.
-- **Hebrew:** Questions are in English in code; you can add Hebrew text or i18n when you’re ready.
-- **More questions / ranking:** Add to `questions.py`; keep options ordered from “least bad” (index 0) to “worst” (last) so `average_level` and `summary_message` still make sense.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+---
 
 Stay safe, stay silly.

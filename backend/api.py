@@ -2,6 +2,10 @@
 War Trivia - API layer (parallel to CLI).
 """
 
+from __future__ import annotations
+
+from typing import List, Optional
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -26,12 +30,12 @@ app.add_middleware(
 class QuestionOut(BaseModel):
     index: int
     text: str
-    options: list[str]
-    show_only_if_previous_choice_was_not: int | None
+    options: List[str]
+    show_only_if_previous_choice_was_not: Optional[int]
 
 
 class ResultIn(BaseModel):
-    answers: list[int]
+    answers: List[int]
 
 
 class ResultOut(BaseModel):
@@ -40,7 +44,7 @@ class ResultOut(BaseModel):
     message: str
 
 
-@app.get("/api/questions", response_model=list[QuestionOut])
+@app.get("/api/questions", response_model=List[QuestionOut])
 def get_questions() -> list[QuestionOut]:
     """Return all questions with index and optional skip rule for the frontend."""
     return [

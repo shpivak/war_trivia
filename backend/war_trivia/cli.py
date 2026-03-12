@@ -3,8 +3,8 @@ War Trivia - CLI.
 Pick how bad you're experiencing it (no right/wrong). Light and funny.
 """
 
-from logic import TriviaGame, TriviaQuestion, summary_message
-from questions import ALL_QUESTIONS
+from .logic import TriviaGame, TriviaQuestion, summary_message
+from .questions import ALL_QUESTIONS
 
 
 def print_header() -> None:

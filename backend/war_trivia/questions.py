@@ -3,7 +3,7 @@ War Trivia - Questions (EN for display).
 Source order: better → worse (index 0 = least bad, last = roughest).
 """
 
-from logic import TriviaQuestion
+from .logic import TriviaQuestion
 
 SHELTER = TriviaQuestion(
     text="What's your shelter situation?",
